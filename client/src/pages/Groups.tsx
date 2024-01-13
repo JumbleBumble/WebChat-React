@@ -11,7 +11,7 @@ function Groups() {
     const handleShow = () => setShow(true);
 
 	return (
-		<div>
+		<div style={{ marginBottom: '69.67vh' }}>
 			<div
 				className="card rounded-3 shadow-sm mx-auto my-4"
 				style={{ maxWidth: '50vw' }}

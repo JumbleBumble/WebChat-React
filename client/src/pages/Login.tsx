@@ -36,17 +36,19 @@ function Login() {
 				navigate('/')
 			} else {
 				setAlert(
-				<AlertDismissible
-					title="Failed login"
-					body="Invalid credentials"
-					variant="danger"
-					isShow={true}
-				/>
-			)}
+					<AlertDismissible
+						key={new Date().getTime()}
+						title="Failed login"
+						body="Invalid credentials"
+						variant="danger"
+						isShow={true}
+					/>
+				)}
 
 		} catch (error) {
 			setAlert(
 				<AlertDismissible
+					key={new Date().getTime()}
 					title="Failed login"
 					body="Invalid credentials"
 					variant="danger"
