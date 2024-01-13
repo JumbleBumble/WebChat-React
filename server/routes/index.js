@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const passport = require('passport');
 const genPassword = require('../lib/passwordUtils').genPassword;
-const connection = require('../config/database');
-const User = connection.models.User;
+const User = require('../models/User')
 const isAuth = require('./authMiddleware').isAuth;
 const isAdmin = require('./authMiddleware').isAdmin;
 

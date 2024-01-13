@@ -1,8 +1,7 @@
 const socketIO = require('socket.io')
 const cookie = require('cookie')
-const connection = require('../config/database')
-const User = connection.models.User
-const Message = connection.models.Message
+const User = require('../models/User')
+const Message = require('../models/message')
 
 module.exports = (server, sessionStore) => {
 	const io = socketIO(server, {

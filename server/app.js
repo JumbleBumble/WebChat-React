@@ -12,7 +12,7 @@ var app = express()
 const server = http.createServer(app)
 app.use(
 	cors({
-		origin: 'http://localhost:5173', //TODO change to dotenv
+		origin: process.env.CORS_URL,
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		credentials: true,
 	})
@@ -28,7 +28,7 @@ app.use(
 		saveUninitialized: true,
 		store: sessionStore,
 		cookie: {
-			maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+			maxAge: 1000 * 60 * 60 * 24, //(1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
 		},
 	})
 )
@@ -44,8 +44,10 @@ app.use((req, res, next) => {
 })
 app.use(routes)
 
-app.listen(3000)
+app.listen(parseInt(process.env.PORT), () => {
+	console.log(`Express Server running on port ${process.env.PORT}`)
+})
 
-server.listen(3003, () => {
-	console.log(`Server running on http://localhost:${3003}`)
+server.listen(parseInt(process.env.IO_PORT), () => {
+	console.log(`Socket.IO Server running on port ${process.env.IO_PORT}`)
 })
