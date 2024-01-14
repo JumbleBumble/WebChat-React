@@ -1,7 +1,8 @@
 const express = require('express')
 const session = require('express-session')
 var passport = require('passport')
-var routes = require('./routes')
+var auth_route = require('./routes/auth')
+var group_route = require('./routes/group')
 const sessionStore = require('./modules/sessionStore')
 const socketModule = require('./modules/socket')
 const http = require('http')
@@ -42,7 +43,8 @@ socketModule(server, sessionStore)
 app.use((req, res, next) => {
 	next()
 })
-app.use(routes)
+app.use(auth_route)
+app.use(group_route)
 
 app.listen(parseInt(process.env.PORT), () => {
 	console.log(`Express Server running on port ${process.env.PORT}`)

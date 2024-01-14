@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import withLayout from '../hoc/withLayout'
 import { io, Socket } from 'socket.io-client'
 
@@ -6,38 +7,56 @@ const socketUrl = import.meta.env.VITE_REACT_APP_SOCKET_URL
 
 function Chat() {
 	const [message, setMessage] = useState('')
-	const [messages, setMessages] = useState<string[]>([])
+	const [messages, setMessages] = useState<
+		{ username: string; message: string }[]
+	>([])
 	const [socket, setSocket] = useState<Socket | null>(null)
 	const [connectedUsers, setConnectedUsers] = useState<string[]>([])
+	const [currentRoom, setCurrentRoom] = useState<string>('main')
+	const { id } = useParams()
 
 	useEffect(() => {
 		const newSocket = io(socketUrl, {
 			withCredentials: true,
 		})
 		setSocket(newSocket)
-		newSocket.emit('joinRoom', 'main')
+		if (id) {
+			setCurrentRoom(id)
+		}
+		newSocket.emit('joinRoom', currentRoom)
 
-		newSocket.on('chatMessage', (newMessage: string) => {
-			setMessages((prevMessages) => [...prevMessages, newMessage])
+		newSocket.on('chatMessage', (username: string, newMessage: string) => {
+			setMessages((prevMessages) => [
+				...prevMessages,
+				{ username: username, message: newMessage },
+			])
 		})
 
-		newSocket.on('connectedUsers', (allUsers: string[]) => {
-			setConnectedUsers(allUsers)
-		})
-
-		newSocket.on('messageHistory', (allMessages: string[]) => {
-			setMessages(allMessages)
-		})
+		newSocket.on(
+			'messageHistory',
+			(allMessages: { username: string; message: string }[]) => {
+				setMessages(allMessages)
+			}
+		)
 
 		return () => {
+			newSocket.emit('leaveRoom', currentRoom)
 			newSocket.disconnect()
 			setSocket(null)
 		}
-	}, [])
+	}, [currentRoom, id])
+
+	useEffect(() => {
+		if (socket) {
+			socket.on('connectedUsers', (allUsers: string[]) => {
+				setConnectedUsers(allUsers)
+			})
+		}
+	}, [socket, connectedUsers])
 
 	const sendMessage = () => {
 		if (message.trim() !== '' && socket !== null) {
-			socket.emit('chatMessage', { room: 'main', message })
+			socket.emit('chatMessage', { room: currentRoom, message })
 			setMessage('')
 		}
 	}
@@ -80,7 +99,7 @@ function Chat() {
 							<div className="card" key={index}>
 								<div className="card-body">
 									<p className="card-text">
-										<b>User</b>: {msg}
+										<b>{msg.username}</b>: {msg.message}
 									</p>
 								</div>
 							</div>

@@ -44,7 +44,7 @@ function Navbar() {
 						</Link>
 						{isAuthenticated && (
 							<>
-								<Link className="nav-link" to="/chat">
+								<Link className="nav-link" to="/chat/main">
 									Chat
 								</Link>
 								<Link className="nav-link" to="/groups">

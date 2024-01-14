@@ -38,20 +38,27 @@ module.exports = (server, sessionStore) => {
 		}
 	})
 
-	const connectedUsers = []
+	const connectedUsers = {}
 	io.on('connection', async (socket) => {
-		connectedUsers.push(socket.user)
-
 		socket.on('joinRoom', async (room) => {
+			connectedUsers[room] = connectedUsers[room] || []
 			socket.join(room)
-			io.to(room).emit('connectedUsers', connectedUsers)
+			connectedUsers[room].push(socket.user)
+			io.to(room).emit('connectedUsers', connectedUsers[room])
+			let limit = -1
+			if (room == 'main') {
+				limit = 30
+			}
 			const roomHistory = await Message.find({ room: room })
 				.sort({ createdAt: 1 })
-				.limit(30)
+				.limit(limit)
 				.exec()
 
 			if (roomHistory && roomHistory.length !== 0) {
-				messageHistory = roomHistory.map((message) => message.message)
+				messageHistory = roomHistory.map(({ username, message }) => ({
+					username,
+					message,
+				}))
 				if (messageHistory && messageHistory.length !== 0) {
 					io.to(room).emit('messageHistory', messageHistory)
 				}
@@ -60,10 +67,17 @@ module.exports = (server, sessionStore) => {
 
 		socket.on('leaveRoom', async (room) => {
 			socket.leave(room)
+			connectedUsers[room] = connectedUsers[room] || []
+
+			connectedUsers[room] = connectedUsers[room].filter(
+				(user) => user !== socket.user
+			)
+
+			io.to(room).emit('connectedUsers', connectedUsers[room])
 		})
 
 		socket.on('chatMessage', async ({ room, message }) => {
-			io.to(room).emit('chatMessage', message)
+			io.to(room).emit('chatMessage', socket.user, message)
 
 			const newMessage = new Message({
 				username: socket.user,
@@ -75,7 +89,7 @@ module.exports = (server, sessionStore) => {
 		})
 
 		socket.on('disconnect', async () => {
-			connectedUsers.pop(socket.user)
+			//connectedUsers.pop(socket.user)
 		})
 	})
 }
