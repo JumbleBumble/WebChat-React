@@ -92,7 +92,10 @@ router.delete('/api/group/delete/:id', isAuth, async (req, res, next) => {
 	const groupId = req.params.id
 
 	try {
-		const isMember = await Group.exists({ _id: groupId, users: username })
+		const isMember = await Group.exists({
+			_id: groupId,
+			users: { $in: [username] },
+		})
 
 		if (isMember) {
 			const members = await Group.findById(groupId)

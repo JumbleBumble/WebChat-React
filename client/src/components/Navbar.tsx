@@ -1,9 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
+import { ReactSVG } from 'react-svg'
+import { isMobile } from 'react-device-detect'
+import purpleconf from '../assets/purpleconf.svg'
 import axios from 'axios'
 
 function Navbar() {
-    const { isAuthenticated, username, checkAuthentication } = useAuth()
+	const { isAuthenticated, username, checkAuthentication } = useAuth()
 
 	let navigate = useNavigate()
 
@@ -21,9 +24,16 @@ function Navbar() {
 	}
 
 	return (
-		<nav className="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
+		<nav className="navbar navbar-expand-sm navbar-toggleable-sm">
+			{isMobile ? (
+				<div className="navbar-svg navbar-mobile"></div>
+			) : (
+				<div className="navbar-svg animato">
+					<ReactSVG src={purpleconf} />
+				</div>
+			)}
 			<div className="container-fluid">
-				<Link className="navbar-brand" to="/">
+				<Link className="navbar-brand text-light" to="/">
 					WebChat
 				</Link>
 				<button
@@ -39,15 +49,21 @@ function Navbar() {
 				</button>
 				<div className="collapse navbar-collapse">
 					<div className="navbar-nav">
-						<Link className="nav-link" to="/">
+						<Link className="nav-link text-light" to="/">
 							Home
 						</Link>
 						{isAuthenticated && (
 							<>
-								<Link className="nav-link" to="/chat/main">
+								<Link
+									className="nav-link text-light"
+									to="/chat/main"
+								>
 									Chat
 								</Link>
-								<Link className="nav-link" to="/groups">
+								<Link
+									className="nav-link text-light"
+									to="/groups"
+								>
 									Chat Groups
 								</Link>
 							</>
@@ -58,11 +74,14 @@ function Navbar() {
 			<ul className="navbar-nav">
 				{isAuthenticated ? (
 					<>
-						<li className="nav-item" style={{ height: '0px' }}>
+						<li
+							className="nav-item text-light"
+							style={{ height: '0px' }}
+						>
 							Hello {username}!
 						</li>
 						<button
-							className="nav-link me-5"
+							className="nav-link text-light py-3 me-5"
 							onClick={handleLogout}
 						>
 							Logout
@@ -70,10 +89,10 @@ function Navbar() {
 					</>
 				) : (
 					<>
-						<Link className="nav-link" to="/register">
+						<Link className="nav-link text-light" to="/register">
 							Register
 						</Link>
-						<Link className="nav-link me-5" to="/login">
+						<Link className="nav-link text-light me-5" to="/login">
 							Login
 						</Link>
 					</>

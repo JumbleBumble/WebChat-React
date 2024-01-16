@@ -61,12 +61,12 @@ function Chat() {
 		}
 	}
 	return (
-		<div>
+		<div className="bg-orange">
 			<div className="container">
 				<div className="row row-cols-1">
 					<div className="col p-3">
 						<div className="container">
-							<h2 className="d-flex justify-content-center">
+							<h2 className="d-flex justify-content-center text-light">
 								Connected Users
 							</h2>
 							<div
@@ -111,7 +111,7 @@ function Chat() {
 						<input
 							type="text"
 							id="messageInput"
-							className="flex-fill p-1 rounded"
+							className="flex-fill p-1 rounded input-solid"
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 						/>

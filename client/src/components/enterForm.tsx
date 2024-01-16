@@ -9,7 +9,7 @@ interface ComponentProps {
 
 function EnterForm({ title, formHandler, inputHandler }: ComponentProps) {
 	return (
-		<div className="d-flex align-items-center">
+		<div className="d-flex bg-orange align-items-center">
 			<div
 				className="container p-2 d-flex flex-column align-items-center justify-content-evenly gap-3"
 				style={{ minHeight: '55vh' }}

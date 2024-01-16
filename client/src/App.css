@@ -1,9 +1,103 @@
+@import 'bootstrap/dist/css/bootstrap.css';
+
+
+
+
+.alert-purp {
+  color: #660066;
+  background-color: #eeccee;
+  border-color: #e6b3e6; }
+  .alert-purp .alert-link {
+    color: #520052; }
+
+.bg-purp {
+  background-color: #500033 !important; }
+
+.bg-orange {
+  background-color: #aa4a07 !important; }
+
+.text-purp {
+  color: #aa00aa !important; }
+
+.border-purp {
+  border-color: #500033 !important; }
+
+.link-purp {
+  color: #aa00aa; }
+  .link-purp:hover, .link-purp:focus {
+    color: #880088; }
+
+
+
+body {
+  background-color: #aa4a07;
+}
+
 .footer {
   position: relative;
   bottom: 0;
   width: 100%;
   white-space: nowrap;
 }
+
+
+
+.home-back{
+  background-color: #AA4A07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cpolygon fill='%23cc0000' points='957 450 539 900 1396 900'/%3E%3Cpolygon fill='%23aa0000' points='957 450 872.9 900 1396 900'/%3E%3Cpolygon fill='%23d6002b' points='-60 900 398 662 816 900'/%3E%3Cpolygon fill='%23b10022' points='337 900 398 662 816 900'/%3E%3Cpolygon fill='%23d9004b' points='1203 546 1552 900 876 900'/%3E%3Cpolygon fill='%23b2003d' points='1203 546 1552 900 1162 900'/%3E%3Cpolygon fill='%23d3006c' points='641 695 886 900 367 900'/%3E%3Cpolygon fill='%23ac0057' points='587 900 641 695 886 900'/%3E%3Cpolygon fill='%23c4008c' points='1710 900 1401 632 1096 900'/%3E%3Cpolygon fill='%239e0071' points='1710 900 1401 632 1365 900'/%3E%3Cpolygon fill='%23aa00aa' points='1210 900 971 687 725 900'/%3E%3Cpolygon fill='%23880088' points='943 900 1210 900 971 687'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+
+.navbar-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: clip; /* Ensure content doesn't overflow the container */
+  z-index: -1;
+}
+
+.navbar-svg svg {
+  width: 300vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+}
+
+.navbar-mobile{
+  background-image: url(./assets/purpleconf.svg);
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+
+@keyframes moveAnim {
+  0% {
+    transform: scaleY(1) translateY(-15vh);
+  }
+
+  100% {
+    transform: scaleY(1) translateY(-70vh);
+  }
+}
+
+.animato {
+  animation: moveAnim 10s linear infinite;
+}
+
+.egg-back{
+background-size: cover;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' viewBox='0 0 700 700' width='700' height='700' opacity='1'%3E%3Cdefs%3E%3Cfilter id='nnnoise-filter' x='-20%25' y='-20%25' width='140%25' height='140%25' filterUnits='objectBoundingBox' primitiveUnits='userSpaceOnUse' color-interpolation-filters='linearRGB'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.05' numOctaves='4' seed='15' stitchTiles='stitch' x='0%25' y='0%25' width='100%25' height='100%25' result='turbulence'%3E%3C/feTurbulence%3E%3CfeSpecularLighting surfaceScale='11' specularConstant='2.2' specularExponent='20' lighting-color='%237a3505' x='0%25' y='0%25' width='100%25' height='100%25' in='turbulence' result='specularLighting'%3E%3CfeDistantLight azimuth='3' elevation='74'%3E%3C/feDistantLight%3E%3C/feSpecularLighting%3E%3C/filter%3E%3C/defs%3E%3Crect width='700' height='700' fill='transparent'%3E%3C/rect%3E%3Crect width='700' height='700' fill='%237a3505' filter='url(%23nnnoise-filter)'%3E%3C/rect%3E%3C/svg%3E");
+ background-attachment: fixed;
+  z-index: -1;
+}
+
 
 .input-solid {
    border-style: solid!important; 

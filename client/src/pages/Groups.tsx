@@ -1,6 +1,7 @@
 import axios from 'axios'
 import withLayout from '../hoc/withLayout'
 import { useEffect, useState } from 'react'
+import React from 'react'
 import {
 	ModalBody,
 	ModalFooter,
@@ -24,21 +25,21 @@ function Groups() {
 	const handleClose = () => setShow(false)
 	const handleShow = () => setShow(true)
 
-	useEffect(() => {
-		const fetchUserGroups = async () => {
-			try {
-				const response = await axios.get(apiUrl + 'group/user', {
-					withCredentials: true,
-				})
+	const fetchUserGroups = async () => {
+		try {
+			const response = await axios.get(apiUrl + 'group/user', {
+				withCredentials: true,
+			})
 
-				if (response.data) {
-					setGroups(response.data)
-				}
-			} catch (error) {
-				console.error('Error getting user groups', error)
+			if (response.data) {
+				setGroups(response.data)
 			}
+		} catch (error) {
+			console.error('Error getting user groups', error)
 		}
+	}
 
+	useEffect(() => {
 		fetchUserGroups()
 	}, [])
 
@@ -52,6 +53,7 @@ function Groups() {
 					withCredentials: true,
 				}
 			)
+			fetchUserGroups()
 		} catch (error) {
 			setAlert(
 				<AlertDismissible
@@ -67,12 +69,40 @@ function Groups() {
 		setShow(false)
 	}
 
+	async function DeleteGroup(target: HTMLElement): Promise<void> {
+		try {
+			await axios.delete(apiUrl + 'group/delete/' + target.id, {
+				withCredentials: true,
+			})
+			fetchUserGroups()
+		} catch (error) {
+			setAlert(
+				<AlertDismissible
+					key={new Date().getTime()}
+					title="Failed to delete group"
+					body="There was a problem when deleting the group."
+					variant="danger"
+					isShow={true}
+				/>
+			)
+			console.error('Error creating group:', error)
+		}
+		setShow(false)
+	}
+
+	const deleteEvent =
+		(parameter: any) =>
+		async (event: React.MouseEvent<HTMLButtonElement>) => {
+			await DeleteGroup(event.target as HTMLElement)
+		}
+
 	interface UserContainerProps {
 		users: string[]
+		_id: string
 	}
 
 	const UserContainer: React.FC<UserContainerProps> = ({ users }) => (
-		<div>
+		<div className="container d-flex flex-wrap">
 			{users.map((user, index) => (
 				<div
 					key={index}
@@ -98,18 +128,15 @@ function Groups() {
 					<div className="list-group-item list-group-item-action rounded-3 p-3">
 						<div className="position-absolute top-0 end-0 d-flex justify-content-end p-1">
 							<button
-								id="del @group.Id"
+								id={item._id}
 								className="btn btn-danger btn-sm"
+								onClick={deleteEvent(EventTarget)}
 							>
 								X
 							</button>
 						</div>
 						<div className="d-flex align-items-center">
-							<div>
-								<div className="container d-flex flex-wrap">
-									<UserContainer users={item.users} />
-								</div>
-							</div>
+							<UserContainer users={item.users} _id={item._id} />
 						</div>
 						<div className="d-flex justify-content-center">
 							<Link
@@ -126,11 +153,11 @@ function Groups() {
 	)
 
 	return (
-		<div style={{ marginBottom: '69.67vh' }}>
+		<div className="bg-orange" style={{ height: '100vh' }}>
 			{alert}
 			<div
-				className="card rounded-3 shadow-sm mx-auto my-4"
-				style={{ maxWidth: '50vw' }}
+				className="card rounded-3 shadow-sm mx-auto"
+				style={{ bottom: '-5%', maxWidth: '50vw' }}
 			>
 				<div className="card-header d-flex align-items-center mb-0 pb-0 rounded">
 					<h4 className="flex-grow-1 mb-0">Group Messages</h4>

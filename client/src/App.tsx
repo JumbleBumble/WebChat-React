@@ -8,6 +8,8 @@ import Home from './pages/Home'
 import Register from './pages/Register'
 import Login from './pages/Login'
 
+//color scheme: Primary: #FF7700 Secondary: #AA0000 Secondary-light:#CC0000 alt: #AA00AA alt-dark: #880088
+
 function App() {
    return (
 		<Router>
