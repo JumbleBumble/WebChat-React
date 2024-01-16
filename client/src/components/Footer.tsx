@@ -10,7 +10,7 @@ function Footer() {
 					</Link>
 				</li>
 				<li className="nav-item">
-					<Link className="nav-link px-2 text-light" to="/chat">
+					<Link className="nav-link px-2 text-light" to="/chat/main">
 						Chat
 					</Link>
 				</li>
