@@ -43,7 +43,9 @@ module.exports = (server, sessionStore) => {
 		socket.on('joinRoom', async (room) => {
 			connectedUsers[room] = connectedUsers[room] || []
 			socket.join(room)
-			connectedUsers[room].push(socket.user)
+			if (!connectedUsers[room].includes(socket.user)) {
+				connectedUsers[room].push(socket.user)
+			}
 			io.to(room).emit('connectedUsers', connectedUsers[room])
 			let limit = -1
 			if (room == 'main') {
@@ -89,7 +91,7 @@ module.exports = (server, sessionStore) => {
 		})
 
 		socket.on('disconnect', async () => {
-			//connectedUsers.pop(socket.user)
+			//placeholder
 		})
 	})
 }

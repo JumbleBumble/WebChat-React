@@ -6,6 +6,7 @@ const conn = process.env.DB_STRING
 const connection = mongoose.createConnection(conn, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
+	useFindAndModify: false,
 })
 
 module.exports = connection

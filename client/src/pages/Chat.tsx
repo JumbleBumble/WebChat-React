@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import withLayout from '../hoc/withLayout'
 import { io, Socket } from 'socket.io-client'
@@ -14,6 +14,7 @@ function Chat() {
 	const [connectedUsers, setConnectedUsers] = useState<string[]>([])
 	const [currentRoom, setCurrentRoom] = useState<string>('main')
 	const { id } = useParams()
+	const containerRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
 		const newSocket = io(socketUrl, {
@@ -54,6 +55,13 @@ function Chat() {
 		}
 	}, [socket, connectedUsers])
 
+	useEffect(() => {
+		// Scroll to the bottom when messages change
+		if (containerRef && containerRef.current) {
+			containerRef.current.scrollTop = containerRef.current.scrollHeight
+		}
+	}, [messages, message])
+
 	const sendMessage = () => {
 		if (message.trim() !== '' && socket !== null) {
 			socket.emit('chatMessage', { room: currentRoom, message })
@@ -93,6 +101,7 @@ function Chat() {
 					<div
 						className="container d-flex flex-column overflow-auto gap-3"
 						style={{ height: '55vh' }}
+						ref={containerRef}
 						id="messagesList"
 					>
 						{messages.map((msg, index) => (
