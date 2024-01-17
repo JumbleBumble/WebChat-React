@@ -21,17 +21,14 @@ function Login() {
 
 	const handleLogin = async () => {
 		try {
-			await axios.post(
-				apiUrl + 'login',
-				formData,
-				{
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					withCredentials: true,
+			await axios.post(apiUrl + 'login', formData, {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-			)
-			const authed = await checkAuthentication();
+				withCredentials: true,
+			})
+
+			const authed = await checkAuthentication()
 			if (authed) {
 				navigate('/')
 			} else {
@@ -43,8 +40,8 @@ function Login() {
 						variant="danger"
 						isShow={true}
 					/>
-				)}
-
+				)
+			}
 		} catch (error) {
 			setAlert(
 				<AlertDismissible
@@ -63,6 +60,13 @@ function Login() {
 		const { name, value } = e.target
 		setFormData((prevData) => ({ ...prevData, [name]: value }))
 	}
+
+	useEffect(() => {
+		//redirecting to the homepage if the user is already authenticated
+		if (isAuthenticated) {
+			navigate('/')
+		}
+	}, [isAuthenticated, navigate])
 
 	return( 
 	<div>

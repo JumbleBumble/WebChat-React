@@ -22,23 +22,27 @@ interface AuthProviderProps {
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
 	const [username, setUsername] = useState<string | null>(null)
+
 	async function checkAuthentication() {
 		try {
 			const apiUrl = import.meta.env.VITE_REACT_APP_API_URL
+
 			const response = await axios.get(apiUrl + 'check-auth', {
 				withCredentials: true,
 			})
 
 			if (response.status == 200) {
 				setIsAuthenticated(true)
-				setUsername(response.data.user)
-				console.log('User!', response.data.user)
+
+				if (response.data.username) {
+					setUsername(response.data.user)
+				}
+
 				return true
 			}
 		} catch (error) {
 			setIsAuthenticated(false)
 			setUsername(null)
-			console.log('bruh I returned false lmao')
 			return false
 		}
 		return false

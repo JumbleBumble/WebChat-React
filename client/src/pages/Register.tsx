@@ -7,16 +7,18 @@ import AlertDismissible from '../components/AlertDismissible'
 import EnterForm from '../components/enterForm'
 
 function Register() {
+	const { isAuthenticated, username, checkAuthentication } = useAuth()
 	const [alert, setAlert] = useState<JSX.Element>(<></>)
-
 	const [formData, setFormData] = useState({
 		user: '',
 		pw: '',
 	})
+
 	let navigate = useNavigate()
 
 	const handleRegister = async () => {
 		const apiUrl = import.meta.env.VITE_REACT_APP_API_URL
+
 		try {
 			await axios.post(apiUrl + 'register', formData)
 			navigate('/')
@@ -38,6 +40,13 @@ function Register() {
 		const { name, value } = e.target
 		setFormData((prevData) => ({ ...prevData, [name]: value }))
 	}
+
+	useEffect(() => {
+		//redirecting to the homepage if the user is already authenticated
+		if (isAuthenticated) {
+			navigate('/')
+		}
+	}, [isAuthenticated, navigate])
 
 	return (
 		<div>

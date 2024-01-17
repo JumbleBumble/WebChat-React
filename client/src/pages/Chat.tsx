@@ -20,6 +20,8 @@ function Chat() {
 	const containerRef = useRef<HTMLDivElement | null>(null)
 	const [alert, setAlert] = useState<JSX.Element>(<></>)
 
+	// First useEffect hook to initialize the socket connection,
+	// join the room, and listen for chat messages and message history
 	useEffect(() => {
 		const newSocket = io(socketUrl, {
 			withCredentials: true,
@@ -28,29 +30,38 @@ function Chat() {
 		if (id) {
 			setCurrentRoom(id)
 		}
-		newSocket.emit('joinRoom', currentRoom)
 
-		newSocket.on('chatMessage', (username: string, newMessage: string) => {
-			setMessages((prevMessages) => [
-				...prevMessages,
-				{ username: username, message: newMessage },
-			])
-		})
+		if (newSocket) {
+			newSocket.emit('joinRoom', currentRoom)
 
-		newSocket.on(
-			'messageHistory',
-			(allMessages: { username: string; message: string }[]) => {
-				setMessages(allMessages)
-			}
-		)
+			newSocket.on(
+				'chatMessage',
+				(username: string, newMessage: string) => {
+					setMessages((prevMessages) => [
+						...prevMessages,
+						{ username: username, message: newMessage },
+					])
+				}
+			)
+
+			newSocket.on(
+				'messageHistory',
+				(allMessages: { username: string; message: string }[]) => {
+					setMessages(allMessages)
+				}
+			)
+		}
 
 		return () => {
-			newSocket.emit('leaveRoom', currentRoom)
-			newSocket.disconnect()
+			if (newSocket) {
+				newSocket.emit('leaveRoom', currentRoom)
+				newSocket.disconnect()
+			}
 			setSocket(null)
 		}
 	}, [currentRoom, id])
 
+	// Second useEffect hook to listen for updates to the connectedUsers array
 	useEffect(() => {
 		if (socket) {
 			socket.on('connectedUsers', (allUsers: string[]) => {
@@ -59,17 +70,19 @@ function Chat() {
 		}
 	}, [socket, connectedUsers])
 
+	// Third useEffect hook to scroll to the bottom of the messages container when messages change
 	useEffect(() => {
-		// Scroll to the bottom when messages change
 		if (containerRef && containerRef.current) {
 			containerRef.current.scrollTop = containerRef.current.scrollHeight
 		}
 	}, [messages, message])
 
+	// Fourth useEffect hook to check authentication and display an alert if the user is not authenticated
 	useEffect(() => {
 		const CheckAuthAlert = async () => {
 			if (!isAuthenticated) {
 				const authed = await checkAuthentication()
+
 				if (!authed) {
 					setAlert(
 						<AlertDismissible

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-
+import React from 'react'
 
 interface ComponentProps {
 	title: string
@@ -35,7 +34,6 @@ function EnterForm({ title, formHandler, inputHandler }: ComponentProps) {
 			</div>
 		</div>
 	)
-
 }
 
 export default EnterForm

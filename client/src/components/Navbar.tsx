@@ -13,10 +13,12 @@ function Navbar() {
 
 	const handleLogout = async () => {
 		const apiUrl = import.meta.env.VITE_REACT_APP_API_URL
+
 		try {
 			await axios.get(apiUrl + 'logout', {
 				withCredentials: true,
 			})
+
 			checkAuthentication()
 			navigate('/')
 		} catch (error) {

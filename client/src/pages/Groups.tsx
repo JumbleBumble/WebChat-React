@@ -23,10 +23,13 @@ function Groups() {
 	const [groups, setGroups] = useState<
 		Record<string, UserContainerProps> | undefined
 	>()
-
+	//Handles hiding Modal
 	const handleClose = () => setShow(false)
+
+	//Handles showing Modal
 	const handleShow = () => setShow(true)
 
+	// Function for fetching user groups from the API
 	const fetchUserGroups = async () => {
 		try {
 			const response = await axios.get(apiUrl + 'group/user', {
@@ -41,11 +44,13 @@ function Groups() {
 		}
 	}
 
+	//UseEffect for calling fetchUserGroups then checks users authentication
 	useEffect(() => {
 		fetchUserGroups()
 		const CheckAuthAlert = async () => {
 			if (!isAuthenticated) {
 				const authed = await checkAuthentication()
+
 				if (!authed) {
 					setAlert(
 						<AlertDismissible
@@ -65,6 +70,7 @@ function Groups() {
 	async function CreateGroup(): Promise<void> {
 		try {
 			const users: string[] = groupInput.split(',')
+
 			await axios.post(
 				apiUrl + 'group/create',
 				{ users: users },
@@ -72,6 +78,7 @@ function Groups() {
 					withCredentials: true,
 				}
 			)
+
 			fetchUserGroups()
 		} catch (error) {
 			setAlert(
@@ -83,6 +90,7 @@ function Groups() {
 					isShow={true}
 				/>
 			)
+
 			console.error('Error creating group:', error)
 		}
 		setShow(false)
@@ -93,6 +101,7 @@ function Groups() {
 			await axios.delete(apiUrl + 'group/delete/' + target.id, {
 				withCredentials: true,
 			})
+
 			fetchUserGroups()
 		} catch (error) {
 			setAlert(
@@ -120,6 +129,7 @@ function Groups() {
 		_id: string
 	}
 
+	// Handles putting users into GroupContainer
 	const UserContainer: React.FC<UserContainerProps> = ({ users }) => (
 		<div className="container d-flex flex-wrap">
 			{users.map((user, index) => (
@@ -137,6 +147,7 @@ function Groups() {
 		data: Record<string, UserContainerProps>
 	}
 
+	//Handles setting up group elements
 	const GroupContainer: React.FC<GroupContainerProps> = ({ data }) => (
 		<div>
 			{Object.entries(data).map(([ikey, item], index) => (
