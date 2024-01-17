@@ -10,20 +10,25 @@ const Group = require('../models/group')
 
 router.post('/api/group/create', isAuth, async (req, res, next) => {
 	const users = req.body.users
+
 	try {
 		if (users && users.length > 0) {
 			const groupExists = await Group.exists({ users: users })
+
 			if (!groupExists) {
 				const newGroup = new Group({
 					users: users,
 				})
+
 				newGroup.save()
 				res.status(200).send('Group successfully created')
 				return
 			}
+
 			res.status(400).send('Group already exists')
 			return
 		}
+
 		res.status(400).send('Users not found')
 	} catch (error) {
 		console.error(error)
@@ -101,6 +106,7 @@ router.delete('/api/group/delete/:id', isAuth, async (req, res, next) => {
 			const members = await Group.findById(groupId)
 				.select('users')
 				.lean()
+
 			if (members && members.users && members.users.length <= 1) {
 				const deletedGroup = await Group.findByIdAndRemove(groupId)
 
@@ -116,6 +122,7 @@ router.delete('/api/group/delete/:id', isAuth, async (req, res, next) => {
 					{ users: members },
 					{ new: true }
 				)
+
 				if (updatedGroup) {
 					res.status(200).send('Group successfully left')
 				} else {

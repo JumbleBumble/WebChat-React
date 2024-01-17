@@ -23,7 +23,7 @@ function AlertDismissible({ title, body, variant, isShow }: AlertProps) {
 	const buttonVariant = 'outline-' + variant
 
 	return (
-		<div className="m-1">
+		<div className="fixed-top mt-5 me-2 ms-2">
 			<Alert show={show} variant={variant} className="p-1">
 				<Alert.Heading>{title}</Alert.Heading>
 				<p>{body}</p>

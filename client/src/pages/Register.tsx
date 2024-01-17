@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 import axios from 'axios'
 import withLayout from '../hoc/withLayout'
+import AlertDismissible from '../components/AlertDismissible'
 import EnterForm from '../components/enterForm'
 
 function Register() {
-	const { isAuthenticated, username, checkAuthentication } = useAuth()
+	const [alert, setAlert] = useState<JSX.Element>(<></>)
 
 	const [formData, setFormData] = useState({
 		user: '',
@@ -19,8 +20,16 @@ function Register() {
 		try {
 			await axios.post(apiUrl + 'register', formData)
 			navigate('/')
-
-		} catch (error) {
+		} catch (error: any) {
+			setAlert(
+				<AlertDismissible
+					key={new Date().getTime()}
+					title="Failed to register"
+					body={error.response.data}
+					variant="danger"
+					isShow={true}
+				/>
+			)
 			console.error('Error registering:', error)
 		}
 	}
@@ -31,11 +40,14 @@ function Register() {
 	}
 
 	return (
-		<EnterForm
-			title="Register"
-			formHandler={handleRegister}
-			inputHandler={handleInputChange}
-		/>
+		<div>
+			{alert}
+			<EnterForm
+				title="Register"
+				formHandler={handleRegister}
+				inputHandler={handleInputChange}
+			/>
+		</div>
 	)
 }
 

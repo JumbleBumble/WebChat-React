@@ -16,6 +16,7 @@ module.exports = (server, sessionStore) => {
 		try {
 			const parsedCookies = cookie.parse(socket.request.headers.cookie)
 			const connectSidValue = parsedCookies['connect.sid']
+
 			if (connectSidValue) {
 				const sessionID = connectSidValue.split('.')[0].split(':')[1]
 				const session = await sessionStore.get(sessionID)
@@ -25,14 +26,17 @@ module.exports = (server, sessionStore) => {
 					socketUser = await User.findById(passportSessionUser)
 						.select('username')
 						.lean()
+
 					if (socketUser && socketUser.username) {
 						socket.user = socketUser.username
 						return next()
 					}
 				}
-				throw new Error('User not found')
+
+				console.error('User not found:', passportSessionUser)
 			}
-			throw new Error('Session not found')
+
+			console.error('Session not found:', sessionID)
 		} catch (error) {
 			return next(new Error('Authentication error'))
 		}
@@ -43,10 +47,13 @@ module.exports = (server, sessionStore) => {
 		socket.on('joinRoom', async (room) => {
 			connectedUsers[room] = connectedUsers[room] || []
 			socket.join(room)
+
 			if (!connectedUsers[room].includes(socket.user)) {
 				connectedUsers[room].push(socket.user)
 			}
+
 			io.to(room).emit('connectedUsers', connectedUsers[room])
+
 			let limit = -1
 			if (room == 'main') {
 				limit = 30
@@ -61,6 +68,7 @@ module.exports = (server, sessionStore) => {
 					username,
 					message,
 				}))
+
 				if (messageHistory && messageHistory.length !== 0) {
 					io.to(room).emit('messageHistory', messageHistory)
 				}
@@ -88,10 +96,6 @@ module.exports = (server, sessionStore) => {
 			})
 
 			newMessage.save()
-		})
-
-		socket.on('disconnect', async () => {
-			//placeholder
 		})
 	})
 }

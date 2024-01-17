@@ -29,14 +29,16 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				withCredentials: true,
 			})
 
-			if (response.status >= 200 && response.status < 300) {
+			if (response.status == 200) {
 				setIsAuthenticated(true)
 				setUsername(response.data.user)
+				console.log('User!', response.data.user)
 				return true
 			}
 		} catch (error) {
 			setIsAuthenticated(false)
 			setUsername(null)
+			console.log('bruh I returned false lmao')
 			return false
 		}
 		return false

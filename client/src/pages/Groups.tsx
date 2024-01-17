@@ -12,9 +12,11 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import AlertDismissible from '../components/AlertDismissible'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../AuthContext'
 
 function Groups() {
 	const apiUrl = import.meta.env.VITE_REACT_APP_API_URL
+	const { isAuthenticated, username, checkAuthentication } = useAuth()
 	const [show, setShow] = useState<boolean>(false)
 	const [groupInput, setGroupInput] = useState<string>('')
 	const [alert, setAlert] = useState<JSX.Element>(<></>)
@@ -41,6 +43,23 @@ function Groups() {
 
 	useEffect(() => {
 		fetchUserGroups()
+		const CheckAuthAlert = async () => {
+			if (!isAuthenticated) {
+				const authed = await checkAuthentication()
+				if (!authed) {
+					setAlert(
+						<AlertDismissible
+							key={new Date().getTime()}
+							title="Not Authorized"
+							body="You must be authorized to view this page!"
+							variant="danger"
+							isShow={true}
+						/>
+					)
+				}
+			}
+		}
+		CheckAuthAlert()
 	}, [])
 
 	async function CreateGroup(): Promise<void> {
@@ -155,56 +174,62 @@ function Groups() {
 	return (
 		<div className="bg-orange" style={{ height: '100vh' }}>
 			{alert}
-			<div
-				className="card rounded-3 shadow-sm mx-auto"
-				style={{ bottom: '-5%', maxWidth: '50vw' }}
-			>
-				<div className="card-header d-flex align-items-center mb-0 pb-0 rounded">
-					<h4 className="flex-grow-1 mb-0">Group Messages</h4>
-					<button
-						onClick={handleShow}
-						className="btn btn-primary rounded-circle m-2"
-						data-bs-toggle="modal"
-						data-bs-target="#groupModal"
-					>
-						<b>+</b>
-					</button>
-				</div>
-				{groups && (
+			{isAuthenticated && (
+				<div className="py-5">
 					<div
-						className="card-body overflow-auto position-relative d-grid gap-3"
-						style={{ maxHeight: '70vh' }}
+						className="card rounded-3 shadow-sm mx-auto"
+						style={{ bottom: '-5%', maxWidth: '50vw' }}
 					>
-						<GroupContainer data={groups} />
+						<div className="card-header d-flex align-items-center mb-0 pb-0 rounded">
+							<h4 className="flex-grow-1 mb-0">
+								Group Messages
+							</h4>
+							<button
+								onClick={handleShow}
+								className="btn btn-primary rounded-circle m-2"
+								data-bs-toggle="modal"
+								data-bs-target="#groupModal"
+							>
+								<b>+</b>
+							</button>
+						</div>
+						{groups && (
+							<div
+								className="card-body overflow-auto position-relative d-grid gap-3"
+								style={{ maxHeight: '70vh' }}
+							>
+								<GroupContainer data={groups} />
+							</div>
+						)}
 					</div>
-				)}
-			</div>
-			<Modal show={show} onHide={handleClose}>
-				<ModalHeader closeButton>
-					<ModalTitle>Create Group</ModalTitle>
-				</ModalHeader>
-				<ModalBody className="d-flex">
-					<input
-						placeholder="User, User, User"
-						id="groupUsers"
-						className="flex-grow-1"
-						value={groupInput}
-						onChange={(e) => setGroupInput(e.target.value)}
-					/>
-				</ModalBody>
-				<ModalFooter>
-					<Button variant="secondary" onClick={handleClose}>
-						Close
-					</Button>
-					<Button
-						variant="primary"
-						id="createGrp"
-						onClick={CreateGroup}
-					>
-						Create
-					</Button>
-				</ModalFooter>
-			</Modal>
+					<Modal show={show} onHide={handleClose}>
+						<ModalHeader closeButton>
+							<ModalTitle>Create Group</ModalTitle>
+						</ModalHeader>
+						<ModalBody className="d-flex">
+							<input
+								placeholder="User, User, User"
+								id="groupUsers"
+								className="flex-grow-1"
+								value={groupInput}
+								onChange={(e) => setGroupInput(e.target.value)}
+							/>
+						</ModalBody>
+						<ModalFooter>
+							<Button variant="secondary" onClick={handleClose}>
+								Close
+							</Button>
+							<Button
+								variant="primary"
+								id="createGrp"
+								onClick={CreateGroup}
+							>
+								Create
+							</Button>
+						</ModalFooter>
+					</Modal>
+				</div>
+			)}
 		</div>
 	)
 }
