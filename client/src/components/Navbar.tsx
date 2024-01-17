@@ -29,7 +29,7 @@ function Navbar() {
 			{isMobile ? (
 				<div className="navbar-svg navbar-mobile"></div>
 			) : (
-				<div className="navbar-svg animato">
+				<div className="navbar-svg nav-anim">
 					<ReactSVG src={purpleconf} />
 				</div>
 			)}

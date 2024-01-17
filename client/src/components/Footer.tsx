@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 function Footer() {
 	return (
-		<footer className="bg-orange egg-back py-3">
+		<footer className="bg-orange footer-back py-3">
 			<ul className="nav justify-content-center pb-3">
 				<li className="nav-item">
 					<Link className="nav-link px-2 text-light" to="/">
