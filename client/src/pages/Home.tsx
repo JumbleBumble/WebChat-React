@@ -8,7 +8,7 @@ function Home() {
 			style={{ height: '90vh' }}
 		>
 			<h1 className="text-light">
-				Vite+React(TSX) Express.js Chat Application
+				Vite+React(TS) Express.js Chat Application
 			</h1>
 			<HoverAnimation />
 		</div>
