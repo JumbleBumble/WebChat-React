@@ -34,7 +34,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			if (response.status == 200) {
 				setIsAuthenticated(true)
 
-				if (response.data.username) {
+				if (response.data.user) {
 					setUsername(response.data.user)
 				}
 
